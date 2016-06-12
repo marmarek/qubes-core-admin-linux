@@ -1,7 +1,7 @@
 #!/bin/bash
 
-UPDATEVM=`qubes-prefs --get updatevm`
-UPDATES_STAT_FILE=/var/lib/qubes/updates/dom0-updates-available
+[ -n "$UPDATEVM" ] || UPDATEVM=`qubes-prefs --get updatevm`
+[ -n "$UPDATES_STAT_FILE" ] || UPDATES_STAT_FILE=/var/lib/qubes/updates/dom0-updates-available
 
 if [ -z "$UPDATEVM" ]; then
     echo "UpdateVM not set, exiting"
@@ -23,15 +23,15 @@ if [ "$1" = "--help" ]; then
 fi
 
 # Prevent template upgrade - this would override user changes
-TEMPLATE_EXCLUDE_OPTS="--exclude=`rpm -qa --qf '%{NAME},' qubes-template-\*`"
-PKGS=
-YUM_OPTS="$TEMPLATE_EXCLUDE_OPTS"
-GUI=
-CHECK_ONLY=
-ALL_OPTS="$TEMPLATE_EXCLUDE_OPTS $*"
-YUM_ACTION=
-QVMRUN_OPTS=
-CLEAN=
+[ -n "$TEMPLATE_EXCLUDE_OPTS" ] || TEMPLATE_EXCLUDE_OPTS="--exclude=`rpm -qa --qf '%{NAME},' qubes-template-\*`"
+[ -n "$PKGS" ] || PKGS=
+[ -n "$YUM_OPTS" ] || YUM_OPTS="$TEMPLATE_EXCLUDE_OPTS"
+[ -n "$GUI" ] || GUI=
+[ -n "$CHECK_ONLY" ] || CHECK_ONLY=
+[ -n "$ALL_OPTS" ] || ALL_OPTS="$TEMPLATE_EXCLUDE_OPTS $*"
+[ -n "$YUM_ACTION" ] || YUM_ACTION=
+[ -n "$QVMRUN_OPTS" ] || QVMRUN_OPTS=
+[ -n "$CLEAN" ] || CLEAN=
 # Filter out some yum options and collect packages list
 while [ $# -gt 0 ]; do
     case "$1" in
