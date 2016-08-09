@@ -142,7 +142,10 @@ class AppmenusExtension(qubes.ext.Extension):
             anything_changed = True
 
         templates_dir = self.templates_dir(vm)
-        appmenus = os.listdir(templates_dir)
+        if os.path.exists(templates_dir):
+            appmenus = os.listdir(templates_dir)
+        else:
+            appmenus = []
         changed_appmenus = []
         if os.path.exists(self.whitelist_path(vm)):
             whitelist = [x.rstrip() for x in open(self.whitelist_path(vm))]
@@ -297,13 +300,13 @@ class AppmenusExtension(qubes.ext.Extension):
             return
         shutil.rmtree(self.icons_dir(vm))
 
-    @qubes.ext.handler('property-pre-set:name')
+    @qubes.ext.handler('property-pre-set:name', vm=qubes.vm.qubesvm.QubesVM)
     def pre_rename(self, vm, event, prop, *args):
         if not os.path.exists(vm.dir_path):
             return
         self.appmenus_remove(vm)
 
-    @qubes.ext.handler('property-set:name')
+    @qubes.ext.handler('property-set:name', vm=qubes.vm.qubesvm.QubesVM)
     def post_rename(self, vm, event, prop, *args):
         if not os.path.exists(vm.dir_path):
             return
